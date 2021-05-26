@@ -17,7 +17,8 @@ int main(){
 
 	for(auto beg=grade_t.begin(),end=grade_t.end();beg!=end;++beg){
 		int clu_pos=*beg/10; //decide each grade's cluster
-		*(clu_beg+clu_pos)+=1;
+	        if(*beg<100&&*beg>0)
+			*(clu_beg+clu_pos)+=1;
 	}
 
 	for(auto ele:cluster_t)
