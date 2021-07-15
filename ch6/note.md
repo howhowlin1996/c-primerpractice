@@ -1,23 +1,35 @@
 6.1. Function Basics
 
-argument v.s. parameter
-int main()						int fact(int val){ 
-{							/*val->parameter*/
-int j = fact(5); // ()-> call operator, 5->argument	}
+#**bold**argument v.s. parameter
+```
+int main()					
+{				
+int j = fact(5); // ()-> call operator, 5->argument	
 cout << "5! is " << j << endl;
 return 0;
 }
+```
+```
+// factorial of val is val * (val - 1) * (val - 2) . . . * ((val - (val - 1)) * 1)
+int fact(int val) //val->parameter
+{
+int ret = 1; // local variable to hold the result as we calculate it
+while (val > 1)
+ret *= val--; // assign ret * val to ret and decrement val
+return ret; // return the result
+}
+```
 
 
 function execution
-1. parameters be created and initialize
+1.parameters be created and initialize
 2.execution operation inside the block
 3.return statement
 	a.return the value
 	b.transfer contro; out of called function back to the calling ones
 
 
-
+```
 // factorial of val is val * (val - 1) * (val - 2) . . . * ((val - (val - 1)) * 1)
 int fact(int val)
 {
@@ -26,13 +38,15 @@ while (val > 1)
 ret *= val--; // assign ret * val to ret and decrement val
 return ret; // return the result
 }
-
+```
+```
 int val = 5; // initialize val from the literal 5
 int ret = 1; // code from the body of fact
 while (val > 1)
 ret *= val--;
 int j = ret; // initialize j as a copy of ret
 Parameters and
+```
 
 function parameters can be empty:
 void f1(){ /* ... */ } // implicit void parameter list
