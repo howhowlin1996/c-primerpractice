@@ -1,6 +1,6 @@
 6.1. Function Basics
 
-#**bold**argument v.s. parameter
+#argument v.s. parameter
 ```
 int main()					
 {				
