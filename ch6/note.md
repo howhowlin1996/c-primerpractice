@@ -102,13 +102,13 @@ int main()
 * It is initialized by the arguments passed to the function.
 
 ## Static Variable
-* A local static variable is a local variable that defined with static keyword. It has a lifetime much longer than usual local variable.
+##### A local static variable is a local variable that defined with static keyword. It has a lifetime much longer than usual local variable.
 
 * The scope of a local static variable is the same as local variable, which is the function body.
 * The lifetime of the local static varible starts when the first time control passes through the variable's definition, and ends when the program terminates.
 * It is initialized if its definition contains an initializer, otherwise, it is value initialized.
 * For example,
-'''
+```
 int foo(int param) {
   int lv;
   static int lsv = 1;
@@ -116,7 +116,7 @@ int foo(int param) {
   ++lsv;
   return lv;
 }
-'''
+```
 ##### every time the function foo is called, it will add how many times it has been called to the argument and return the sum.
 
 
