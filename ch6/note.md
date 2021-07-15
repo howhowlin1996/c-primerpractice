@@ -4,19 +4,19 @@
 ```
 int main()					
 {				
-int j = fact(5); // ()-> call operator, 5->argument	
-cout << "5! is " << j << endl;
-return 0;
+	int j = fact(5); // ()-> call operator, 5->argument	
+	cout << "5! is " << j << endl;
+	return 0;
 }
 ```
 ```
 // factorial of val is val * (val - 1) * (val - 2) . . . * ((val - (val - 1)) * 1)
 int fact(int val) //val->parameter
 {
-int ret = 1; // local variable to hold the result as we calculate it
-while (val > 1)
-ret *= val--; // assign ret * val to ret and decrement val
-return ret; // return the result
+	int ret = 1; // local variable to hold the result as we calculate it
+	while (val > 1)
+		ret *= val--; // assign ret * val to ret and decrement val
+	return ret; // return the result
 }
 ```
 
@@ -33,10 +33,10 @@ return ret; // return the result
 // factorial of val is val * (val - 1) * (val - 2) . . . * ((val - (val - 1)) * 1)
 int fact(int val)
 {
-int ret = 1; // local variable to hold the result as we calculate it
-while (val > 1)
-ret *= val--; // assign ret * val to ret and decrement val
-return ret; // return the result
+	int ret = 1; // local variable to hold the result as we calculate it
+	while (val > 1)
+		ret *= val--; // assign ret * val to ret and decrement val
+	return ret; // return the result
 }
 ```
 ```
@@ -49,10 +49,10 @@ int j = ret; // initialize j as a copy of ret
 
 ## Function Parameters can be empty:
 ```
-	void f1(){ /* ... */ } // implicit void parameter list
+void f1(){ /* ... */ } // implicit void parameter list
 ```
 ```
-	void f2(void){ /* ... */ } // explicit void parameter list
+void f2(void){ /* ... */ } // explicit void parameter list
 ```
 
 ## Even when the types of two parameters are the same, we still need to initialize it with type:
@@ -77,18 +77,47 @@ i.e.:
 ```
 size_t count_calls()
 {
-static size_t ctr = 0; // value will persist across calls
-return ++ctr;
+	static size_t ctr = 0; // value will persist across calls
+	return ++ctr;
 }
 int main()
 {
-for (size_t i = 0; i != 10; ++i)
-cout << count_calls() << endl;
-return 0;
+	for (size_t i = 0; i != 10; ++i)
+		cout << count_calls() << endl;
+	return 0;
 }
 ```
+## Local Variable
+###### A local variable is a variable defined inside the function scope.
 
+* The scope of a local variable is the function body.
+* The lifetime of the ordinary local variable (nonstatic) starts when control passes through the variable's definition, and ends when control passes through the end of the block in which the variable is defined.
+* It is initialized if its definition contains an initializer, otherwise, it is default initialized.
 
+## Parameter
+##### A parameter is also a local variable, but the definition is in the parameter list of the function.
+
+* The scope of a parameter is the same as local variable, which is the function body.
+* The lifetime of the parameter starts when the function begins, and ends when the function terminates.
+* It is initialized by the arguments passed to the function.
+
+## Static Variable
+* A local static variable is a local variable that defined with static keyword. It has a lifetime much longer than usual local variable.
+
+* The scope of a local static variable is the same as local variable, which is the function body.
+* The lifetime of the local static varible starts when the first time control passes through the variable's definition, and ends when the program terminates.
+* It is initialized if its definition contains an initializer, otherwise, it is value initialized.
+* For example,
+'''
+int foo(int param) {
+  int lv;
+  static int lsv = 1;
+  lv = param + lsv;
+  ++lsv;
+  return lv;
+}
+'''
+##### every time the function foo is called, it will add how many times it has been called to the argument and return the sum.
 
 
 
