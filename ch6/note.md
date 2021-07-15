@@ -48,21 +48,25 @@ int j = ret; // initialize j as a copy of ret
 ```
 
 ## Function Parameters can be empty:
-```void f1(){ /* ... */ } // implicit void parameter list
 ```
-```void f2(void){ /* ... */ } // explicit void parameter list
+	void f1(){ /* ... */ } // implicit void parameter list
+```
+```
+	void f2(void){ /* ... */ } // explicit void parameter list
 ```
 
 ## Even when the types of two parameters are the same, we still need to initialize it with type:
-```int f3(int v1, v2) { /* ... */ } // error
 ```
-```int f4(int v1, int v2) { /* ... */ } // ok
+	int f3(int v1, v2) { /* ... */ } // error
+```
+```
+	int f4(int v1, int v2) { /* ... */ } // ok
 ```
 
-## Function return type can't be array type, we use pointer to substitute it.
+### Function return type can't be array type, we use pointer to substitute it.
 
-## Automatic objects:Objects that exist only while a block is executing.After execution exists a block, the values of them in the block are undefined.(i.e. parameters)
-## Automatic objects corresponding to the function parameters are initialized by the arguments passed to the function.
+### Automatic objects:Objects that exist only while a block is executing.After execution exists a block, the values of them in the block are undefined.(i.e. parameters)
+### Automatic objects corresponding to the function parameters are initialized by the arguments passed to the function.
 
 ## Local static objects:
 * 1.lifetime can continue across calls to the function
