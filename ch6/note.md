@@ -49,11 +49,15 @@ int j = ret; // initialize j as a copy of ret
 
 ## Function Parameters can be empty:
 ```void f1(){ /* ... */ } // implicit void parameter list
-   void f2(void){ /* ... */ } // explicit void parameter list```
+```
+```void f2(void){ /* ... */ } // explicit void parameter list
+```
 
 ## Even when the types of two parameters are the same, we still need to initialize it with type:
-```int f3(int v1, v2) { /* ... */ } // error```
-```int f4(int v1, int v2) { /* ... */ } // ok```
+```int f3(int v1, v2) { /* ... */ } // error
+```
+```int f4(int v1, int v2) { /* ... */ } // ok
+```
 
 ## Function return type can't be array type, we use pointer to substitute it.
 
