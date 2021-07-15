@@ -136,7 +136,7 @@ void print(vector<int>::const_iterator ,
 vector<int>::const_iterator );
 ```
 
-##### Function declarations are also known as the function **bold** prototype.
+##### Function declarations are also known as the function **bold prototype**.
 
 
 
