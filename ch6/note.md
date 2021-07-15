@@ -65,7 +65,7 @@ void f2(void){ /* ... */ } // explicit void parameter list
 
 ##### Function return type can't be array type, we use pointer to substitute it.
 
-##### Automatic objects:Objects that exist only while a block is executing.After execution exists a block, the values of them in the block are undefined.(i.e. parameters)
+##### Automatic objects:Objects that exist only while a block is executing.After execution exists a block, the values of them in the block are undefined.(e.g parameters)
 ##### Automatic objects corresponding to the function parameters are initialized by the arguments passed to the function.
 
 ## Local static objects:
@@ -73,7 +73,7 @@ void f2(void){ /* ... */ } // explicit void parameter list
 * 2.initialized when first time execution
 * 3.destroyed when the program terminates
 
-i.e.:
+e.g:
 ```
 size_t count_calls()
 {
@@ -119,9 +119,24 @@ int foo(int param) {
 ```
 ##### every time the function foo is called, it will add how many times it has been called to the argument and return the sum.
 
+## Function Declarations
 
+##### A function declaration is just like a function definition except that a declaration has no function body. In a declaration, a semicolon replaces the function body. 
 
+##### Because a function declaration has no body, there is no need for parameter names.
 
+```
+// parameter names chosen to indicate that the iterators denote a range of values to print
+void print(vector<int>::const_iterator beg,
+vector<int>::const_iterator end);
+```
+```
+// without parameter name is ok
+void print(vector<int>::const_iterator ,
+vector<int>::const_iterator );
+```
+
+##### Function declarations are also known as the function **bold** prototype.
 
 
 
