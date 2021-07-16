@@ -1,7 +1,7 @@
 # 6.1. Function Basics
 
 ## Argument v.s. Parameter
-```
+```c++
 int main()					
 {				
 	int j = fact(5); // ()-> call operator, 5->argument	
@@ -9,7 +9,7 @@ int main()
 	return 0;
 }
 ```
-```
+```c++
 // factorial of val is val * (val - 1) * (val - 2) . . . * ((val - (val - 1)) * 1)
 int fact(int val) //val->parameter
 {
@@ -29,7 +29,7 @@ int fact(int val) //val->parameter
 	* b.transfer contro; out of called function back to the calling ones
 
 
-```
+```c++
 // factorial of val is val * (val - 1) * (val - 2) . . . * ((val - (val - 1)) * 1)
 int fact(int val)
 {
@@ -39,7 +39,7 @@ int fact(int val)
 	return ret; // return the result
 }
 ```
-```
+```c++
 int val = 5; // initialize val from the literal 5
 int ret = 1; // code from the body of fact
 while (val > 1)
@@ -48,18 +48,18 @@ int j = ret; // initialize j as a copy of ret
 ```
 
 ## Function Parameters can be empty:
-```
+```c++
 void f1(){ /* ... */ } // implicit void parameter list
 ```
-```
+```c++
 void f2(void){ /* ... */ } // explicit void parameter list
 ```
 
 ## Even when the types of two parameters are the same, we still need to initialize it with type:
-```
+```c++
 int f3(int v1, v2) { /* ... */ } // error
 ```
-```
+```c++
 int f4(int v1, int v2) { /* ... */ } // ok
 ```
 
@@ -74,7 +74,7 @@ int f4(int v1, int v2) { /* ... */ } // ok
 * 3.destroyed when the program terminates
 
 e.g:
-```
+```c++
 size_t count_calls()
 {
 	static size_t ctr = 0; // value will persist across calls
@@ -108,7 +108,7 @@ int main()
 * The lifetime of the local static varible starts when the first time control passes through the variable's definition, and ends when the program terminates.
 * It is initialized if its definition contains an initializer, otherwise, it is value initialized.
 * For example,
-```
+```c++
 int foo(int param) {
   int lv;
   static int lsv = 1;
@@ -117,6 +117,7 @@ int foo(int param) {
   return lv;
 }
 ```
+
 ##### every time the function foo is called, it will add how many times it has been called to the argument and return the sum.
 
 ## Function Declarations
@@ -125,7 +126,7 @@ int foo(int param) {
 
 ##### Because a function declaration has no body, there is no need for parameter names.
 
-```
+```c++
 // parameter names chosen to indicate that the iterators denote a range of values to print
 void print(vector<int>::const_iterator beg,
 vector<int>::const_iterator end);
@@ -145,13 +146,13 @@ vector<int>::const_iterator );
 ##### C++ programs also use the preprocessor to define header guards. Header guards rely on preprocessor variables.
 ##### #ifdef/#ifndef
 * #ifdef
-##### is true if the variable has been defined, and
+	is true if the variable has been defined
 * #ifndef
-##### is true if the variable has not been defined
+	is true if the variable has not been defined
 
 * i.g :
 
-```
+```c++
 #ifndef SALES_DATA_H
 #define SALES_DATA_H
 #include <string>
@@ -162,9 +163,14 @@ struct Sales_data {
 };
 #endif
 ```
-##### preprocessor variables usually are written in all uppercase.
+##### Preprocessor variables usually are written in all uppercase.
 
 
+##Sperate Compilation
 
+##### Separate compilation lets us split our programs into several files, each of which can be compiled independently.
 
+##### fact.cc->fact function Chapter6.h.->declararction of fact function factMain.exe-> main function
+
+##### To produce an executable file, we must tell the compiler where to find all of the code we use.
 
