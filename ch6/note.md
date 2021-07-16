@@ -43,7 +43,7 @@ int fact(int val)
 int val = 5; // initialize val from the literal 5
 int ret = 1; // code from the body of fact
 while (val > 1)
-ret *= val--;
+	ret *= val--;
 int j = ret; // initialize j as a copy of ret
 ```
 
@@ -73,7 +73,7 @@ int f4(int v1, int v2) { /* ... */ } // ok
 * 2.initialized when first time execution
 * 3.destroyed when the program terminates
 
-e.g:
+* e.g. :
 ```c++
 size_t count_calls()
 {
@@ -131,7 +131,7 @@ int foo(int param) {
 void print(vector<int>::const_iterator beg,
 vector<int>::const_iterator end);
 ```
-```
+```c++
 // without parameter name is ok
 void print(vector<int>::const_iterator ,
 vector<int>::const_iterator );
@@ -144,13 +144,14 @@ vector<int>::const_iterator );
 ##### Headers (usually) contain entities (such as class definitions and const and constexpr variables) that can be defined only once in any given file.
 ##### The most common technique for making it safe to include a header multiple times relies on the preprocessor.
 ##### C++ programs also use the preprocessor to define header guards. Header guards rely on preprocessor variables.
-##### #ifdef/#ifndef
+
+#### #ifdef/#ifndef
 * #ifdef
 	is true if the variable has been defined
 * #ifndef
 	is true if the variable has not been defined
 
-* i.g :
+* e.g. :
 
 ```c++
 #ifndef SALES_DATA_H
@@ -166,11 +167,35 @@ struct Sales_data {
 ##### Preprocessor variables usually are written in all uppercase.
 
 
-##Sperate Compilation
+## Sperate Compilation
 
 ##### Separate compilation lets us split our programs into several files, each of which can be compiled independently.
 
 ##### fact.cc->fact function Chapter6.h.->declararction of fact function factMain.exe-> main function
 
 ##### To produce an executable file, we must tell the compiler where to find all of the code we use.
+
+* e.g. :
+
+``` bash
+$ CC factMain.cc fact.cc # generates factMain.exe or a.out
+$ CC factMain.cc fact.cc -o main # generates main or
+main.exe
+```
+
+##### CC->name of compiler $->system prompt #->begins a command-line comment
+
+##### This process usually yields a file with the .obj (Windows) or .o (UNIX) file extension, indicating that the file contains object code.
+
+##### The compiler lets us link object files together to form an executable.
+
+* On the system we use, we would separately compile our program as follows:
+
+```bash
+$ CC -c factMain.cc # generates factMain.o
+$ CC -c fact.cc # generates fact.o
+$ CC factMain.o fact.o # generates factMain.exe or a.out
+$ CC factMain.o fact.o -o main # generates main or main.exe
+```
+
 
