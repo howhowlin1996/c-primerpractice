@@ -57,10 +57,10 @@ void f2(void){ /* ... */ } // explicit void parameter list
 
 ## Even when the types of two parameters are the same, we still need to initialize it with type:
 ```
-	int f3(int v1, v2) { /* ... */ } // error
+int f3(int v1, v2) { /* ... */ } // error
 ```
 ```
-	int f4(int v1, int v2) { /* ... */ } // ok
+int f4(int v1, int v2) { /* ... */ } // ok
 ```
 
 ##### Function return type can't be array type, we use pointer to substitute it.
@@ -139,8 +139,30 @@ vector<int>::const_iterator );
 ##### Function declarations are also known as the function <font color=#0000FF>**prototype**</font>.
 
 ## Header File
+##### Classes are usually defined in header files.
+##### Headers (usually) contain entities (such as class definitions and const and constexpr variables) that can be defined only once in any given file.
+##### The most common technique for making it safe to include a header multiple times relies on the preprocessor.
+##### C++ programs also use the preprocessor to define header guards. Header guards rely on preprocessor variables.
+##### #ifdef/#ifndef
+* #ifdef
+##### is true if the variable has been defined, and
+* #ifndef
+##### is true if the variable has not been defined
 
+* i.g :
 
+```
+#ifndef SALES_DATA_H
+#define SALES_DATA_H
+#include <string>
+struct Sales_data {
+	std::string bookNo;
+	unsigned units_sold = 0;
+	double revenue = 0.0;
+};
+#endif
+```
+##### preprocessor variables usually are written in all uppercase.
 
 
 
