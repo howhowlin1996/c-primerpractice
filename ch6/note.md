@@ -214,7 +214,7 @@ $ CC factMain.o fact.o -o main # generates main or main.exe
 * Compilation: the compiler takes the pre-processsor's output and prouces an object file from it.
 * Linking: the liker takes all of the object files and produces either a library or an executable file.
 
-! [image](https://github.com/howhowlin1996/c-primerpractice/blob/main/ch6/c%2B%2B%20compilation.png)
+![image](https://github.com/howhowlin1996/c-primerpractice/blob/main/ch6/c%2B%2B%20compilation.png)
 ![image](https://github.com/howhowlin1996/c-primerpractice/blob/main/ch6/c%2B%2B%20compilation%20detail.jpeg)
 
 * Preprocessing:
