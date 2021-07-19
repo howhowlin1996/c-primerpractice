@@ -232,7 +232,7 @@ $ CC factMain.o fact.o -o main # generates main or main.exe
 
 * Compilation:
 
-The compilation step is performed on each output of the preprocessor. The compiler parses the pure C++ source code (now without any preprocessor directives) and converts it into assembly code. Then invokes underlying back-end(assembler in toolchain) that assembles that code into machine code producing actual binary file in some format(ELF, COFF, a.out, ...). This object file contains the compiled code (in binary form) of the symbols defined in the input. Symbols in object files are referred to by name.
+>The compilation step is performed on each output of the preprocessor. The compiler parses the pure C++ source code (now without any preprocessor directives) and converts it into assembly code. Then invokes underlying back-end(assembler in toolchain) that assembles that code into machine code producing actual binary file in some format(ELF, COFF, a.out, ...). This object file contains the compiled code (in binary form) of the symbols defined in the input. Symbols in object files are referred to by name.
 
 >Object files can refer to symbols that are not defined. This is the case when you use a declaration, and don't provide a definition for it. The compiler doesn't mind this, and will happily produce the object file as long as the source code is well-formed.
 
@@ -251,4 +251,60 @@ The compilation step is performed on each output of the preprocessor. The compil
 
 >At this stage the most common errors are missing definitions or duplicate definitions. The former means that either the definitions don't exist (i.e. they are not written), or that the object files or libraries where they reside were not given to the linker. The latter is obvious: the same symbol was defined in two different object files or libraries.
 
+## Argument Passing
 
+* Passed by reference/Called by reference:
+	* When a parameter is a reference, we will bount to its argument.
+
+* Passed by value/Called by value:
+	* When a parameter is not a reference, we will copy the argument value so that they are independent objects.
+
+* Pointer Parameters:
+	* When we copy a pointer, the value of the pointer is copied. After the copy, the two pointers are distinct but point to the same adress. Therefore, We can change the value of that object by assigning through the pointe.
+	* e.g.:
+```c++
+int n = 0, i = 42;
+int *p = &n, *q = &i; // p points to n; q points to i
+*p = 42; // value in n is changed; p is unchanged
+p = q; // p now points to i; values in i and n are
+unchanged
+```
+```c++
+// function that takes a pointer and sets the pointed-to value to zero
+void reset(int *ip)
+{
+	*ip = 0; // changes the value of the object to which ip points
+	ip = 0; // changes only the local copy of ip; the argument is unchanged
+}
+```
+	* After a call to reset, the object to which the argument points will be 0, but the pointer argument itself is unchanged:
+```c++
+int i = 42;
+reset(&i); // changes i but not the address of i
+cout << "i = " << i << endl; // prints i = 0
+```
+* Called by reference:
+	* Reference parameters exploit this behavior. They are often used to allow a function to change the value of one or more of its arguments.
+	* e,g,:
+```c++
+// function that takes a reference to an int and sets the given object to zero
+void reset(int &i) // i is just another name for the object passed to reset
+{
+	i = 0; // changes the value of the object to which i refers
+}
+```
+
+```c++
+int j = 42;
+reset(j); // j is passed by reference; the value in j is changed
+cout << "j = " << j << endl; // prints j = 0
+```
+
+* The advantages called by reference:
+	* more efficient than called by value in objects of large class types or large containers.
+	* some class types can't be copied
+
+	* A function can return only a single value. We can use it to return multiple value.
+
+* Reference parameters that are not changed inside a function should be references to const.
+	
