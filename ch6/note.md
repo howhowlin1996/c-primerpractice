@@ -277,7 +277,7 @@ void reset(int *ip)
 	ip = 0; // changes only the local copy of ip; the argument is unchanged
 }
 ```
-	* After a call to reset, the object to which the argument points will be 0, but the pointer argument itself is unchanged:
+* After a call to reset, the object to which the argument points will be 0, but the pointer argument itself is unchanged:
 ```c++
 int i = 42;
 reset(&i); // changes i but not the address of i
@@ -303,8 +303,46 @@ cout << "j = " << j << endl; // prints j = 0
 * The advantages called by reference:
 	* more efficient than called by value in objects of large class types or large containers.
 	* some class types can't be copied
-
 	* A function can return only a single value. We can use it to return multiple value.
 
 * Reference parameters that are not changed inside a function should be references to const.
-	
+
+* Level of const:
+	* top-level const:indicate that the pointer itself is a const
+		* e.g.: int*i=0,int *const p1=&i
+	* low-level const:a pointer can point to a const object
+		* e.g.: const int *p2=&ci,const int &r=ci
+
+* const parameters:
+	* Just as any other initialization, when we copy an argument to initialize a parameter, top-level consts are ignored.
+	* We can pass either a const or nonconst objects to a parameter thathas a top-levle const.
+	* We can defind several different functions that have the same name.However, they need to be sufficient difference.
+	* e.g.:
+	```c++
+	void fcn(const int i) { /* fcn can read but not write to i */ }
+	void fcn(int i) { /* . . . */ } // error: redefines fcn(int)
+	```
+
+	* Because top-level consts are ignored, we can pass exactly the same types to either version of fcn. The second version of fcn is an error.
+	* We can initialize an object with a low-level const from a nonconst object but not vice versa, and a plain reference must be initialized from an object of the same type.
+
+	* e.g.:
+	```c++
+	int i = 0;
+	const int ci = i;
+	string::size_type ctr = 0;
+	reset(&i); // calls the version of reset that has an int* parameter
+	reset(&ci); // error: can't initialize an int* from a pointer to a const int object
+	reset(i); // calls the version of reset that has an int& parameter
+	reset(ci); // error: can't bind a plain reference to the const object ci
+	reset(42); // error: can't bind a plain reference to a literal
+	reset(ctr); // error: types don't match; ctr has an unsigned type
+	// ok: find_char's first parameter is a reference to const
+	find_char("Hello World!", 'o', ctr);
+	```
+
+* Timing of using reference to const:
+	* It is a somewhat common mistake to define parameters that a function does not change as (plain) references:
+	* We cannot pass a const object, or a literal, or an object that requires conversion to a plain reference parameter.
+
+
