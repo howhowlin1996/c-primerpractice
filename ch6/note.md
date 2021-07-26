@@ -346,3 +346,95 @@ cout << "j = " << j << endl; // prints j = 0
 	* We cannot pass a const object, or a literal, or an object that requires conversion to a plain reference parameter.
 
 
+## Built-in Arrays
+
+##### Arrays are a compound type. a[d]->declarator form. a->name being defined. d->the dimension of the array
+
+##### The dimension must be known at compile time, which means that the dimension must be a constant expression.
+
+```c++
+unsigned cnt = 42; // not a constant expression
+constexpr unsigned sz = 42; // constant expression
+// constexpr see § 2.4.4 (p. 66)
+int arr[10]; // array of ten ints
+int *parr[sz]; // array of 42 pointers to int
+string bad[cnt]; // error: cnt is not a constant expression
+string strs[get_size()]; // ok if get_size is constexpr, error otherwise
+```
+
+##### As with variables of built-in type, a default-initialized array of built-in type that is defined inside a function will have undefined values.
+
+##### We can list initialize the elements. In this case, we can omit the dimension.
+
+```c++
+const unsigned sz = 3;
+int ia1[sz] = {0,1,2}; // array of three ints with values 0, 1, 2
+int a2[] = {0, 1, 2}; // an array of dimension 3
+int a3[5] = {0, 1, 2}; // equivalent to a3[] = {0, 1, 2, 0, 0}
+string a4[3] = {"hi", "bye"}; // same as a4[] = {"hi", "bye", ""}
+int a5[2] = {0,1,2}; // error: too many initializers
+```
+
+##### Character arrays have an additional form of initialization: We can initialize such arrays from a string literal.
+
+```c++
+char a1[] = {'C', '+', '+'}; // list initialization, no null
+char a2[] = {'C', '+', '+', '\0'}; // list initialization, explicit null
+char a3[] = "C++"; // null terminator added
+automatically
+const char a4[6] = "Daniel"; // error: no space for the null!
+//The dimension of a1 is 3; the dimensions of a2 and a3 are both 4.
+```
+##### We cannot initialize an array as a copy of another array, We cannot initialize an array as a copy of another array.
+
+```c++
+int a[] = {0, 1, 2}; // array of three ints
+int a2[] = a; // error: cannot initialize one array with another
+a2 = a; // error: cannot assign one array to another
+```
+
+##### Pointers, References, and Array
+
+```c++
+int *ptrs[10]; // ptrs is an array of ten pointers to int
+int &refs[10] = /* ? */; // error: no arrays of references
+int (*Parray)[10] = &arr; // Parray points to an array of ten ints
+int (&arrRef)[10] = arr; // arrRef refers to an array of ten ints
+int *(&arry)[10] = ptrs; // arry is a reference to an array of ten pointers
+```
+
+```c++
+string *p2 = nums; // equivalent to p2 = &nums[0]
+```
+
+## Array and function
+
+* These declarations are equivalent, all the argument has type const int * :
+	
+	```c++
+	// each function has a single parameter of type const int*
+	void print(const int*);
+	void print(const int[]); // shows the intent that the function takes an array
+	void print(const int[10]); // dimension for documentation purposes (atbest)
+	```
+	```c++
+	int i = 0, j[2] = {0, 1};
+	print(&i); // ok: &i is int*
+	print(j); // ok: j is converted to an int* that points to j[0]
+	```
+
+* Because arrays are passed as pointers, functions ordinarily don’t know the size of the array they are given. They must rely on additional information provided by the caller. There are three common techniques used to manage pointer parameters.
+
+	* Using a Marker to Specify the Extent of an Array:
+		* The first approach to managing array arguments requires the array itself to contain an end marker. ex: C-style strings
+		``` c++
+		void print(const char *cp)
+		{
+		if (cp) // if cp is not a null pointer
+			while (*cp) // so long as the character it points to is not a null character
+		cout << *cp++; // print the character and advance the pointer
+		}
+		```
+		* This convention works well for data where there is an obvious end-marker value (like the null character) that does not appear in ordinary data.
+	
+	* Using the Standard Library Conventions:
