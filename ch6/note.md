@@ -438,3 +438,25 @@ string *p2 = nums; // equivalent to p2 = &nums[0]
 		* This convention works well for data where there is an obvious end-marker value (like the null character) that does not appear in ordinary data.
 	
 	* Using the Standard Library Conventions:
+		* Past pointer begin and end into the function.
+		```c++
+		void print(const int *beg, const int *end)
+		{
+			// print every element starting at beg up to but not including end
+			while (beg != end)
+				cout << *beg++ << endl; // print the current element
+			// and advance the pointer
+		}
+		```
+	
+	* Explicitly Passing a Size Parameter:
+		```c++
+		// const int ia[] is equivalent to const int* ia
+		// size is passed explicitly and used to control access to elements of ia
+		void print(const int ia[], size_t size)
+		{
+			for (size_t i = 0; i != size; ++i) {
+				cout << ia[i] << endl;
+			}
+		}
+		```
