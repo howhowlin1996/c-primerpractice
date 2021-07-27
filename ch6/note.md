@@ -460,3 +460,54 @@ string *p2 = nums; // equivalent to p2 = &nums[0]
 			}
 		}
 		```
+##### When a function does not need write access to the array elements, the array parameter should be a pointer to const.A parameter should be a plain pointer to a nonconst type only if the function needs to change element values.
+
+
+* Array Reference Parameters
+	* e.g.
+	```c++
+	// ok: parameter is a reference to an array; the dimension is part of the type
+	void print(int (&arr)[10])
+	{
+		for (auto elem : arr)
+		cout << elem << endl;
+	}
+	```
+	* We may call this function only for an array of exactly ten ints:
+	* e.g.
+	```c++
+	int i = 0, j[2] = {0, 1};
+	int k[10] = {0,1,2,3,4,5,6,7,8,9};
+	print(&i); // error: argument is not an array of ten ints
+	print(j); // error: argument is not an array of ten ints
+	print(k); // ok: argument is an array of ten ints
+	```
+* Multidimensional Array
+	* The first dimension is usually referred to as the row and the second as the column.
+	* e.g.
+	```c++
+	int ia[3][4] = { // three elements; each element is an array of size 4
+		{0, 1, 2, 3}, // initializers for the row indexed by 0
+		{4, 5, 6, 7}, // initializers for the row indexed by 1
+		{8, 9, 10, 11} // initializers for the row indexed by 2
+	};
+	```
+	
+	* In the second example, we define row as a reference to an array of four ints. We bind that reference to the second row in ia.
+	* e.g.
+	```c++
+	// assigns the first element of arr to the last element in the last row of ia
+	ia[2][3] = arr[0][0][0];
+	int (&row)[4] = ia[1]; // binds row to the second four-element array in ia
+	```
+	* Using a Range for with Multidimensional Array
+	```c++
+	size_t cnt = 0;
+	for (auto &row : ia) // for every element in the outer array
+		for (auto &col : row) { // for every element in the inner array
+			col = cnt; // give this element the next value
+			++cnt; // increment cnt
+		}
+	```
+* Passing a Multidimensional Array
+	
