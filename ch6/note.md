@@ -510,4 +510,24 @@ string *p2 = nums; // equivalent to p2 = &nums[0]
 		}
 	```
 * Passing a Multidimensional Array
-	
+	* As with any array, a multidimensional array is passed as a pointer to its first element.That element is an array, so the pointer is a pointer to an array.	    
+	* The size of the second (and any subsequent) dimension is part of the element type and must be specified:
+	```c++
+	// matrix points to the first element in an array whose elements are arrays of ten ints
+	void print(int (*matrix)[10], int rowSize) { /* . . . */ }
+	```
+	```c++
+	int *matrix[10];//array of ten pointers
+	int (*matrix)[10]; //pointer to an array of ten ints
+	```
+	* We can also define our function using array syntax. As usual,the compiler ignores the first dimension, so it is best not to include it:
+	```c++
+	// equivalent definition
+	void print(int matrix[][10], int rowSize) { /* . . . */ }
+	```
+	* In fact, the parameter is a pointer to an array of ten ints.
+
+
+
+
+
