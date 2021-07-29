@@ -545,14 +545,15 @@ string *p2 = nums; // equivalent to p2 = &nums[0]
 	void print(const int (&ia)[10]) { /* ... */ }
 	```
 ## Main Function arguments:
-	* command line: ./a.out -d -o ofile data0
+
+* command line: ./a.out -d -o ofile data0
 	
 	```c++
 	int main(int argc, char *argv[]) { ... }
 	//or
 	int main(int argc, char **argv) { ... }
 	```
-	* result:
+* result:
 
 	```c++
 	argv[0] = "./a.out"; // or argv[0] might point to an empty string
@@ -565,7 +566,7 @@ string *p2 = nums; // equivalent to p2 = &nums[0]
 
 	```
 
-	* When you use the arguments in argv, remember that the optional arguments begin in argv[1]; argv[0] contains the program’s name, not user input.
+* When you use the arguments in argv, remember that the optional arguments begin in argv[1]; argv[0] contains the program’s name, not user input.
 
 ## Functions with Varying Parametersi
 
