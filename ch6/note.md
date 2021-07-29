@@ -26,7 +26,7 @@ int fact(int val) //val->parameter
 * 2.execution operation inside the block
 * 3.return statement
 	* a.return the value
-	* b.transfer contro; out of called function back to the calling ones
+	* b.transfer control; out of called function back to the calling ones
 
 
 ```c++
@@ -87,6 +87,7 @@ int main()
 	return 0;
 }
 ```
+
 ## Local Variable
 ###### A local variable is a variable defined inside the function scope.
 
@@ -140,6 +141,7 @@ vector<int>::const_iterator );
 ##### Function declarations are also known as the function <font color=#0000FF>**prototype**</font>.
 
 ## Header File
+
 ##### Classes are usually defined in header files.
 ##### Headers (usually) contain entities (such as class definitions and const and constexpr variables) that can be defined only once in any given file.
 ##### The most common technique for making it safe to include a header multiple times relies on the preprocessor.
@@ -526,6 +528,55 @@ string *p2 = nums; // equivalent to p2 = &nums[0]
 	void print(int matrix[][10], int rowSize) { /* . . . */ }
 	```
 	* In fact, the parameter is a pointer to an array of ten ints.
+
+	* exe6.24: Explain the behavior of the following function. If there are problems in the code, explain what they are and how you might fix them.
+	
+	```c++
+	void print(const int ia[10])
+	{
+		for (size_t i = 0; i != 10; ++i)
+		cout << ia[i] << endl;
+	}
+	```
+
+	* The function prototype is the same as void print(const int * ia), which means we can pass any pointer to int to the function, not only an array of ten ints. This will lead to an error. We can change the parameter to a reference to array:
+	
+	```c++
+	void print(const int (&ia)[10]) { /* ... */ }
+	```
+## Main Function arguments:
+	* command line: ./a.out -d -o ofile data0
+	
+	```c++
+	int main(int argc, char *argv[]) { ... }
+	//or
+	int main(int argc, char **argv) { ... }
+	```
+	* result:
+
+	```c++
+	argv[0] = "./a.out"; // or argv[0] might point to an empty string
+	argv[1] = "-d";
+	argv[2] = "-o";
+	argv[3] = "ofile";
+	argv[4] = "data0";
+	//length 5 string array		
+	argv[5] = 0; //C-style string need '/0' at the end 
+
+	```
+
+	* When you use the arguments in argv, remember that the optional arguments begin in argv[1]; argv[0] contains the program’s name, not user input.
+
+## Functions with Varying Parametersi
+
+* Two ways to realize varying parameters function:
+	* initializer_list
+	* variadic template(cover in 16.4)
+
+* initializer_list:
+	* An initializer_list is a library type that represents an array of values of the specified type.
+	* When we define an initializer_list, we must specify the type of the elements that the list will contain:
+	* Unlike vector, the elements in an initializer_list are always const values; there is no way to change the value of an element in an initializer_list.
 
 
 
