@@ -576,10 +576,271 @@ string *p2 = nums; // equivalent to p2 = &nums[0]
 
 * initializer_list:
 	* An initializer_list is a library type that represents an array of values of the specified type.
-	* When we define an initializer_list, we must specify the type of the elements that the list will contain:
+	* When we define an initializer_list, we must specify the type of the elements that the list will contain.
+	
+	```c++
+	initializer_list<string> ls; // initializer_list of strings
+	initializer_list<int> li; // initializer_list of ints
+	```
+
 	* Unlike vector, the elements in an initializer_list are always const values; there is no way to change the value of an element in an initializer_list.
+	* When we pass a sequence of values to an initializer_list parameter, we must enclose the sequence in curly braces.
 
+	```c++
+	void error_msg(initializer_list<string> il)
+	{
+		for (auto beg = il.begin(); beg != il.end(); ++beg)
+			cout << *beg << " " ;
+		cout << endl;
+	}
+	
+	if (expected != actual)
+		error_msg(ErrCode(42), {"functionX", expected, actual});
+	else
+		error_msg(ErrCode(0), {"functionX", "okay"});
+	```
 
+* Ellipsis Parameters ...
+	
+	* Ellipsis parameters should be used only for types that are common to both C and C++.
+	* Using a C library facility named varargs. <cstdarg>
+	* Taking a variable number of arguments.
 
+	```c++
+	// C++ program to demonstrate the
+	// use of Ellipsis
+	#include <cstdarg>
+	#include <iostream>
+	using namespace std;
+	// Function accepting variable number
+	// of arguments using Ellipsis
+	double average(int count, ...)
+	{
+		// va_list found in <cstdarg> and
+		// list is its type, used to
+		// iterate on ellipsis
+		va_list list;
 
+		// Initialize position of va_list
+		va_start(list, count);
 
+		double avg = 0.0;
+
+		// Iterate through every argument
+		for (int i = 0; i < count; i++) {
+			avg += static_cast<double>(va_arg(list, int))
+				/ count;
+		}
+
+		// Ends the use of va_list
+		va_end(list);
+
+		// Return the average
+		return avg;
+	}
+
+	// Driver Code
+	int main()
+	{
+		// Function call
+		double avg = average(6, 1, 2, 3, 4, 5, 6);
+
+		// Print Average
+		cout << "Average is " << avg;
+		return 0;
+	}
+	```
+
+	* va_list type is used to access the values in the ellipsis. It will be conceptually easy for you if you think of ellipsis as an array. In that case, va_list  will act as the iterator type. The va_list is not a special type. It is a macro definition.
+	* va_start points to the va_list at the starting point of the ellipsis. It takes two arguments: va_list itself and the last normal parameter (non-ellipsis).
+	* va_arg returns the value which va_list is currently referring to and also moves va_list to the next parameter. It also takes two arguments: va_list itself and the type of the parameter we are trying to access.
+	* va_end takes only one argument: va_list itself. It is used to clean up the va_list macro.
+
+	* When using ellipsis, the compiler does not check the type of arguments passed to the function. So the compiler does not throw any error if arguments are of different types.
+
+## Functions with No Return Value
+
+* A return with no value may be used only in a function that has a return type of void.
+
+* Typically, void functions use a return to exit the function at an intermediate point. (like break statement to exit a loop)
+
+* An implicit return occurs after the last assignment statement.
+
+```c++
+void swap(int &v1, int &v2)
+{
+	// if the values are already the same, no need to swap, just return
+	if (v1 == v2)
+		return;
+	// if we're here, there's work to do
+	int tmp = v2;
+	v2 = v1;
+	v1 = tmp;
+	// no explicit return necessary
+}
+```
+
+## Functions That Return a Value
+
+* Every return in a function with a return type other than void must return a value.
+
+* The value returned must have the same type as the function return type, or it must have a type that can be implicitly converted to that type.
+
+* Failing to provide a return after a loop that contains a return is an error. However, many compilers will not detect such errors.
+
+```c++
+// incorrect return values, this code will not compile
+bool str_subrange(const string &str1, const string &str2)
+{
+	// same sizes: return normal equality test
+	if (str1.size() == str2.size())
+		return str1 == str2; // ok: == returns bool
+	// find the size of the smaller string; conditional operator
+	auto size = (str1.size() < str2.size())? str1.size() : str2.size();
+	// look at each element up to the size of the smaller string
+	for (decltype(size) i = 0; i != size; ++i) {
+		if (str1[i] != str2[i])
+			return; // error #1: no return value; compiler should detect this error
+	}
+	// error #2: control might flow off the end of the function without a return
+	// the compiler might not detect this error
+}
+```
+
+## How Values Are Returned
+
+* Values are returned in exactly the same way as variables and parameters are initialized: 
+	* The return value is used to initialize a temporary at the call site, and that temporary is the result of the function call.
+
+```c++
+// return a reference to the shorter of two strings
+const string &shorterString(const string &s1, const string
+&s2)
+{
+	return s1.size() <= s2.size() ? s1 : s2;
+}
+```
+
+* The parameters and return type are references to const string. The strings are not copied when the function is called or when the result is returned.
+
+## Never Return a Reference or Pointer to a Local Object
+
+* When a function completes, its storage is freed.After a function terminates, references to local objects refer to memory that is no longer valid:
+
+```c++
+// disaster: this function returns a reference to a local object
+const string &manip()
+{
+	string ret;
+	// transform ret in some way
+	if (!ret.empty())
+		return ret; // WRONG: returning a reference to a local object!
+	else
+	return "Empty"; // WRONG: "Empty" is a local temporary string
+}
+
+```
+
+* One good way to ensure that the return is safe is to ask: To what preexisting
+object is the reference referring?
+
+## Functions That Return Class Types and the Call Operator
+
+* If a function returns a pointer, reference or object of class type, we can use the result of a call to call a member of the resulting object.
+
+```c++
+// call the size member of the string returned by shorterString
+auto sz = shorterString(s1, s2).size()
+```
+
+## Reference Returns Are Lvalues
+
+```c++
+char &get_val(string &str, string::size_type ix)
+{
+	return str[ix]; // get_val assumes the given index is valid
+}
+int main()
+{
+	string s("a value");
+	cout << s << endl; // prints a value
+	get_val(s, 0) = 'A'; // changes s[0] to A
+	cout << s << endl; // prints A value
+	return 0;
+}
+```
+
+* If the return type is a reference to const, then (as usual) we may not assign to the result of the call:
+
+```c++
+shorterString("hi", "bye") = "X"; // error: return value is const
+```
+
+## List Initializing the Return Value
+
+* If the list is empty, that temporary is value initialized. Otherwise, the value of the return depends on the function's return type.
+
+```c++
+vector<string> process()
+{
+	// . . .
+	// expected and actual are strings
+	if (expected.empty())
+		return {}; // return an empty vector
+	else if (expected == actual)
+		return {"functionX", "okay"}; // return list-initialized vector
+	else
+		return {"functionX", expected, actual};
+}
+```
+* In the first return statement, we return an empty list. In this case, the vector that process returns will be empty.
+
+* Otherwise, we return a vector initialized with two or three elements depending on whether expected and actual.
+
+* If returns a built-in type, a braced list may contain at most one value, and that value must not require a narrowing conversion.
+
+* If returns a class type, then the class itself defines how the initializers are used.
+
+```c++
+long double ld = 3.1415926536;
+int a{ld}, b = {ld}; // error: narrowing conversion required
+int c(ld), d = ld; // ok: but value will be truncated
+```
+
+## Return from main
+
+* Only exception function that can terminate without a return.
+
+* The compiler will implicitly insert a return of 0.
+
+*  A zero return indicates success; most other values indicate failure. A nonzero value has a machine-dependent meaning.
+
+* The cstdlib header defines two preprocessor variables that we can use to indicate success or failure.
+
+``` c++
+int main()
+{
+	if (some_failure)
+		return EXIT_FAILURE; // defined in cstdlib
+	else
+		return EXIT_SUCCESS; // defined in cstdlib
+}
+```
+
+* Because these are preprocessor variables, we must not precede them with std::, nor may we mention them in using declarations.
+
+## Recursion
+
+* A function that calls itself, either directly or indirectly, is a recursive function.
+
+```c++
+// calculate val!, which is 1 * 2 * 3 . . . * val
+int factorial(int val)
+{
+	if (val > 1)
+		return factorial(val-1) * val;
+	return 1;
+}
+```
+
+* The main function may not call itself.
