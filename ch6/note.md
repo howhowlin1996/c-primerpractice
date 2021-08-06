@@ -844,3 +844,41 @@ int factorial(int val)
 ```
 
 * The main function may not call itself.
+
+## Returning a Pointer to an Array
+
+* We can't copy an array but we can with pointer or a reference to an array.
+
+* We can use some methods to simplify the declaration of array.
+
+```c++
+typedef int arrT[10]; // arrT is a synonym for the type array of ten ints
+using arrtT = int[10]; // equivalent declaration of arrT; see § 2.5.1 (p. 68)
+arrT* func(int i); // func returns a pointer to an array of five ints
+//func
+is a function that takes a single int argument and returns a pointer to an array of ten ints.
+```
+
+* If without alias, we must remember the rule that declarate array.
+
+```c++
+int arr[10]; // arr is an array of ten ints
+int *p1[10]; // p1 is an array of ten pointers
+int (*p2)[10] = &arr; // p2 points to an array of ten ints
+```
+* Hence, the form of a function that returns a pointer to an array is:
+
+```c++
+Type (*function(parameter_list))[dimension]
+
+int (*func(int i))[10];
+```
+* func(int) says that we can call func with an int argument.
+* (*func(int)) says we can dereference the result of that call.
+* (*func(int))[10] says that dereferencing the result of a call to func yields
+an array of size ten.
+* int (*func(int))[10] says the element type in that array is int.
+
+### Using a Trailing Return Type
+
+* Traiing Return Type: can be difined for any function, but are most useful for functions with complicated return types.
