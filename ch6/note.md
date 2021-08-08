@@ -1153,3 +1153,33 @@ cout << (s1.size() < s2.size() ? s1 : s2) << endl;
 * The inline specification is only a request to the compiler. The compiler may
 choose to ignore this request.
 
+### constexpr Functions
+
+* A function that can be used in a constant expression.
+
+* Restrictions:
+	* The return type and the type of each parameter in a must be a literal type.
+	* The function body must contain exactly one return statement.
+
+```c++
+constexpr int new_sz() { return 42; }
+constexpr int foo = new_sz(); // ok: foo is a constant expression
+```
+
+* constexpr functions are implicitly inline
+
+* function body may contain other statements so long as those statements generate no actions at run time
+
+```c++
+// scale(arg) is a constant expression if arg is a constant expression
+constexpr size_t scale(size_t cnt) { return new_sz() * cnt; }
+int arr[scale(2)]; // ok: scale(2) is a constant expression
+int i = 2; // i is not a constant expression
+int a2[scale(i)]; // error: scale(i) is not a constant expression
+```
+
+* The compiler checks that the result is a constant expression. If it is not, the compiler will produce an error message.
+
+* A constexpr function is not required to return a constant expression.
+
+* inline and constexpr functions normally are defined in headers.
