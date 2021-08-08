@@ -1035,13 +1035,13 @@ void fooBar(int ival)
 }
 ```
 
-	* When the compiler processes the call to read, it finds the local definition of read. That name is a bool variable, and we cannot call a bool.
+* When the compiler processes the call to read, it finds the local definition of read. That name is a bool variable, and we cannot call a bool.
 
-	* Exactly the same process is used to resolve the calls to print.
+* Exactly the same process is used to resolve the calls to print.
 
-	* When we call print, the compiler first looks for a declaration of that name. It finds the local declaration for print that takes an int.
+* When we call print, the compiler first looks for a declaration of that name. It finds the local declaration for print that takes an int.
 
-	* Once a name is found, the compiler ignores uses of that name in any outer scope.
+* Once a name is found, the compiler ignores uses of that name in any outer scope.
 
 * In C++, name lookup happens before type checking.
 
@@ -1063,9 +1063,9 @@ typedef string::size_type sz; // typedef see § 2.5.1 (p. 67)
 string screen(sz ht = 24, sz wid = 80, char backgrnd = ' ');
 ```
 
-	* A default argument is specified as an initializer for a parameter in the parameter list.
+* A default argument is specified as an initializer for a parameter in the parameter list.
 
-	* If a parameter has a default argument, all the parameters that follow it must also have default arguments.
+* If a parameter has a default argument, all the parameters that follow it must also have default arguments.
 
 ```c++
 string window;
@@ -1078,7 +1078,7 @@ window = screen('?'); // calls screen('?',80,' ')
 // right-most trailing
 ```
 
-	* Part of the work of designing a function with default arguments is ordering the parameters so that those least likely to use a default value appear first and those most likely to use a default appear last.
+* Part of the work of designing a function with default arguments is ordering the parameters so that those least likely to use a default value appear first and those most likely to use a default appear last.
 
 
 * It is normal practice to declare a function once inside a header, it is legal to redeclare a function multiple times.
@@ -1109,5 +1109,5 @@ void f2()
 	window = screen(); // calls screen(ht(), 80, '*')
 }
 ```
-	* Our function also declared a local variable that hides the outer wd. However, the local named wd is unrelated to the default argument passed to screen.
+* Our function also declared a local variable that hides the outer wd. However, the local named wd is unrelated to the default argument passed to screen.
 
