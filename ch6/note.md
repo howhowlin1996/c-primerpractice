@@ -1078,6 +1078,16 @@ window = screen('?'); // calls screen('?',80,' ')
 // right-most trailing
 ```
 
+```c++
+int ff(int a, int b = 0, int c = 0); //legal
+char *init(int ht = 24, int wd, char bckgrnd);//ilegal
+
+char *init(int ht, int wd = 80, char bckgrnd = ' ');
+init();		//is illegal, must have at least one argument.
+init(24,10);    //legal
+init(14, '*');	//legal
+```
+
 * Part of the work of designing a function with default arguments is ordering the parameters so that those least likely to use a default value appear first and those most likely to use a default appear last.
 
 
@@ -1110,4 +1120,36 @@ void f2()
 }
 ```
 * Our function also declared a local variable that hides the outer wd. However, the local named wd is unrelated to the default argument passed to screen.
+
+### Inline Functions Avoid Function Call Overhead
+
+* The benefits of defining a function than equivalent expression:
+	* easier to read and understand a call to shorterString than equivalent expression
+	* to ensure uniform behavior. Each test is guaranteed to be done in the same way
+	* If we need to change the computation, it is easier to change the function than to find and change every occurrence of the equivalent expression.
+	* The function can be reused rather than rewritten for other applications.
+
+* drawbacks: Calling a function is apt to be slower than evaluating the equivalent expression.
+
+* function call work:
+	* registers are saved before the call and restored after the return
+	* arguments may be copied
+	*program branches to a new location.
+
+* inline function:
+
+```c++
+inline const string & shorterString(const string &s1, const string &s2)
+{
+	return s1.size() <= s2.size() ? s1 : s2;
+}
+
+cout << shorterString(s1, s2) << endl; 
+// would be expanded during compilation into something like
+cout << (s1.size() < s2.size() ? s1 : s2) << endl;
+//The run-time overhead of making shorterString a function is thus removed.
+```
+
+* The inline specification is only a request to the compiler. The compiler may
+choose to ignore this request.
 
