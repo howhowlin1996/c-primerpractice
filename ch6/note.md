@@ -882,3 +882,232 @@ an array of size ten.
 ### Using a Trailing Return Type
 
 * Traiing Return Type: can be difined for any function, but are most useful for functions with complicated return types.
+
+```c++
+// fcn takes an int argument and returns a pointer to an array of ten ints
+auto func(int i) -> int(*)[10];
+
+```
+* the return type comes after the parameter list, it is easier to see that fun returns a pointer and that that pointer points to an array of ten ints.
+
+### Using decltype
+
+```c++
+int odd[] = {1,3,5,7,9};
+int even[] = {0,2,4,6,8};
+// returns a pointer to an array of five int elements
+decltype(odd) *arrPtr(int i)
+{
+	return (i % 2) ? &odd : &even; // returns a pointer to the array
+}
+```
+* decltype does not automatically convert an array to its corresponding pointer type.
+
+* The type returned by decltype is an array type, to which we must add a * to indicate that arrPtr returns a pointer.
+
+## Overloaded functions
+* Overloaded: functions that have the same name but with different parameters and in the same scope
+
+```c++
+void print(const char *cp);
+void print(const int *beg, const int *end);
+void print(const int ia[], size_t size);
+
+int j[2] = {0,1};
+print("Hello World"); // calls print(const char*)
+print(j, end(j) - begin(j)); // calls print(const int*, size_t)
+print(begin(j), end(j)); // calls print(const int*, const int*)
+```
+
+* The main function may not be overloaded.
+
+* If the parameter lists of two functions match but the return types differ, then the second declaration is an error:
+
+```c++
+Record lookup(const Account&);
+bool lookup(const Account&); // error: only the return type is different
+```
+
+* Two parameter lists can be identical, even if they don’t look the same:
+
+```c++
+// each pair declares the same function
+Record lookup(const Account &acct);
+Record lookup(const Account&); // parameter names are ignored
+
+typedef Phone Telno;
+Record lookup(const Phone&);
+Record lookup(const Telno&); // Telno and Phone are the same type
+```
+
+* On the other hand, we can overload based on whether the parameter is a reference (or pointer) to the const or nonconst version of a given type; such consts are low-level:
+
+```c++
+// functions taking const and nonconst references or pointers have different
+parameters
+// declarations for four independent, overloaded functions
+Record lookup(Account&); // function that takes a reference to
+Account
+Record lookup(const Account&); // new function that takes a const
+reference
+
+Record lookup(Account*); // new function, takes a pointer to
+Account
+Record lookup(const Account*); // new function, takes a pointer to const
+```
+* In these cases, the compiler can use the constness of the argument to distinguish which function to call.
+
+* There is no conversion (§ 4.11.2, p. 162) from const, we can pass a const object (or a pointer to const) only to the version with a const parameter.
+
+* The compiler will prefer the nonconst versions when we pass a nonconst object or pointer to nonconst.
+
+```c++
+#include<iostream>
+void test( int& a){
+	a=2;
+	std::cout<<a<<std::endl;
+
+
+}
+
+void test(const int& a){
+	std::cout<<a<<std::endl;
+
+}
+
+int main(){
+	test(3)
+	int c=3;
+	test(c);
+	const int b=3;
+	test(b);
+
+}
+//output 3,2 & 3
+```
+
+* We should only overload operations that actually do similar things.
+
+* const_cast and Overloading: 
+		* We can call the function on a pair of nonconst string arguments, but we'll get a reference to a const string as the result.
+		* We might want to have a version of shorterString that, when given nonconst arguments, would yield a plain reference.
+```c++
+// return a reference to the shorter of two strings
+const string &shorterString(const string &s1, const string
+&s2)
+{
+	return s1.size() <= s2.size() ? s1 : s2;
+}
+
+string &shorterString(string &s1, string &s2)
+{
+	auto &r = shorterString(const_cast<const string&>(s1),const_cast<const string&>(s2));
+	return const_cast<string&>(r);
+}
+```
+
+### Calling an Overloaded Function
+* Function matching (overload resolution): is the process by which a particular function call is associated with a specific function from a set of overloaded functions.
+
+* The compiler determines which function to call by comparing the arguments in the call with the parameters offered by each function in the overload set.
+
+	* The compiler finds exactly one function that is a best match for the actual arguments and generates code to call that function.
+	* There is no function with parameters that match the arguments in the call, in which case the compiler issues an error message that there was no match.
+	* There is more than one function that matches and none of the matches is clearly best. This case is also an error; it is an ambiguous call.
+
+### Overloading and Scope
+
+* It is a bad idea to declare a function locally.
+
+```c++
+string read();
+void print(const string &);
+void print(double); // overloads the print function
+void fooBar(int ival)
+{
+	bool read = false; // new scope: hides the outer declaration of read
+	string s = read(); // error: read is a bool variable, not a function
+	// bad practice: usually it's a bad idea to declare functions at local scope
+	void print(int); // new scope: hides previous instances of print
+	print("Value: "); // error: print(const string &) is hidden
+	print(ival); // ok: print(int) is visible
+	print(3.14); // ok: calls print(int); print(double) is hidden
+}
+```
+
+	* When the compiler processes the call to read, it finds the local definition of read. That name is a bool variable, and we cannot call a bool.
+
+	* Exactly the same process is used to resolve the calls to print.
+
+	* When we call print, the compiler first looks for a declaration of that name. It finds the local declaration for print that takes an int.
+
+	* Once a name is found, the compiler ignores uses of that name in any outer scope.
+
+* In C++, name lookup happens before type checking.
+
+
+## Features for Specialized Uses
+
+### Default Arguments
+
+* Some functions have parameters that are given a particular value in most, but not all, calls.
+
+* Functions with default arguments can be called with or without that argument.
+
+* For example, we might use a string to represent the contents of a window.
+
+* The window must have particular height, width, and background character. However, we might also want to allow users to pass values other than default.
+
+```c++
+typedef string::size_type sz; // typedef see § 2.5.1 (p. 67)
+string screen(sz ht = 24, sz wid = 80, char backgrnd = ' ');
+```
+
+	* A default argument is specified as an initializer for a parameter in the parameter list.
+
+	* If a parameter has a default argument, all the parameters that follow it must also have default arguments.
+
+```c++
+string window;
+window = screen(); // equivalent to screen(24,80,' ')
+window = screen(66);// equivalent to screen(66,80,' ')
+window = screen(66, 256); // screen(66,256,' ')
+window = screen(66, 256, '#'); // screen(66,256,'#')
+window = screen(, , '?'); // error: can omit only trailing arguments
+window = screen('?'); // calls screen('?',80,' ')
+// right-most trailing
+```
+
+	* Part of the work of designing a function with default arguments is ordering the parameters so that those least likely to use a default value appear first and those most likely to use a default appear last.
+
+
+* It is normal practice to declare a function once inside a header, it is legal to redeclare a function multiple times.
+
+* However, each parameter can have its default specified only once in a given scope.
+
+```c++
+// no default for the height or width parameters
+string screen(sz, sz, char = ' ');
+string screen(sz, sz, char = '*'); // error: redeclaration
+string screen(sz = 24, sz = 80, char); // ok: adds default
+```
+
+* Local variables may not be used as a default argument.
+
+```c++
+// the declarations of wd, def, and ht must appear outside a function
+sz wd = 80;
+char def = ' ';
+sz ht();
+string screen(sz = ht(), sz = wd, char = def);
+string window = screen(); // calls screen(ht(), 80, ' ')
+
+void f2()
+{
+	def = '*'; // changes the value of a default argument
+	sz wd = 100; // hides the outer definition of wd but does not change the default
+	window = screen(); // calls screen(ht(), 80, '*')
+}
+```
+	* Our function also declared a local variable that hides the outer wd. However, the local named wd is unrelated to the default argument passed to screen.
+
