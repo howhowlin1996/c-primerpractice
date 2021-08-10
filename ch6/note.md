@@ -1183,3 +1183,148 @@ int a2[scale(i)]; // error: scale(i) is not a constant expression
 * A constexpr function is not required to return a constant expression.
 
 * inline and constexpr functions normally are defined in headers.
+
+## Debugging
+
+* The idea is that the program will contain debugging code that is executed only while the program is being developed.
+
+* When the application is completed and ready to ship, the debugging code should be turned off.
+
+	* assert
+	* NDEBUG
+
+### assert
+
+* preproccesor macro: is a preprocessor variable that acts somewhat like an inline function
+
+* assert(expr)
+
+* Evaluating expr and if the expression is false (i.e., zero)-> writes a message and terminates the program
+
+* If the expression is true (i.e., is nonzero)-> assert does nothing.
+
+* The assert macro is defined in the cassert header.
+
+* Preprocessor names are managed by the preprocessor not the compiler-> 
+We use preprocessor names directly and do not provide a using declaration for them.
+
+* The assert macro is often used to check for conditions that cannot happen.
+
+```c++
+//a program that does some manipulation of input text might know that all words it is given are always longer than a threshold.
+assert(word.size() > threshold);
+```
+
+###NDEBUG
+
+* The behavior of assert depends on the status of a preprocessor variable named NDEBUG.
+
+* If NDEBUG is defined, assert does nothing.
+
+* By default, NDEBUG is not defined, so, by default, assert performs a run-time check.
+
+* We can turn off debugging by providing a #define to define NDEBUG.
+
+```c++
+$ CC -D NDEBUG main.C # use /D with the Microsoft compiler
+```
+
+* has the same effect as writing #define NDEBUG at the beginning of main.C.
+
+* assert should be used only to verify things that truly should not be possible -> preprocessing doesn't have run-time check
+
+* substitute for run time logic checks or error checking that the program should be forbidded.
+
+* We can write our own conditional debugging code using NDEBUG.
+
+* If NDEBUG is not defined, the code between the #ifndef and the #endif is executed. If NDEBUG is defined, that code is ignored:
+
+```c++
+void print(const int ia[], size_t size)
+{
+#ifndef NDEBUG
+// _ _func_ _ is a local static defined by the compiler that holds the function's name
+cerr << _ _func_ _ << ": array size is " << size << endl;
+#endif
+// ...
+```
+
+* variable named _ _func_ _ to print the name of the function we are debugging
+
+* The compiler defines _ _func_ _ in every function.
+
+* the preprocessor defines four other names that can be useful in debugging:
+
+	* _ _FILE_ _ string literal containing the name of the file
+	* _ _LINE_ _ integer literal containing the current line number
+	* _ _TIME_ _ string literal containing the time the file was compiled
+	* _ _DATE_ _ string literal containing the date the file was compiled
+* We might use these constants to report additional information in error messages:
+
+```c++
+if (word.size() < threshold)
+	cerr << "Error: " << _ _FILE_ _
+		<< " : in function " << _ _func_ _
+		<< " at line " << _ _LINE_ _ << endl
+		<< " Compiled on " << _ _DATE_ _
+		<< " at " << _ _TIME_ _ << endl
+		<< " Word read was \"" << word
+		<< "\": Length too short" << endl;
+```
+
+```
+Error: wdebug.cc : in function main at line 27
+Compiled on Jul 11 2012 at 20:50:03
+Word read was "foo": Length too short
+```
+
+## Function Matching
+
+```c++
+void f();
+void f(int);
+void f(int, int);
+void f(double, double = 3.14);
+f(5.6); // calls void f(double, double)
+```
+
+* First step: identifies the set of candidate functions
+
+	* Candidate Functions: with the same name as called function for which a declaration is visible at the point of the call.
+
+* Second step: selects the viable functions from the set
+
+	* Viable Functions: same number of parameters as there are in the calls, besides the type must match or be convertible.
+
+* We can eliminate f() and f(int,int) from the sets based on the above steps.
+
+* If there are no viable functions, the compiler will complain that there is no matching function.
+
+* Third Steps: finding the best match
+	
+	* idea is that the closer the types of the argument and parameter are to each other, the better the match.
+
+* Now,we analyze multiple parameters, and taking the below call for an example:
+
+```c++
+f(42, 2.56);
+```
+
+* Considering only the first argument, f(int, int) is a better match than f(double, double).
+
+* When we consider only the second parameter, the function f(double, double) is a better match.
+
+* The compiler will reject this call because it is ambiguous: Each viable function is a better match than the other on one of the arguments to the call.
+
+
+### Argument Type Conversion
+
+* The best matching rank:
+	* 1.An exact match. An exact match happens when:
+		* The argument and parameter types are identical.
+		* The argument is converted from an array or function type to the corresponding pointer type.
+		* A top-level const is added to or discarded from the argument.
+	* 2.Match through a const conversion.
+	* 3.Match through a promotion.
+	* 4.Match through an arithmetic or or pointer conversion.
+	* 5.Match through a class-type conversion.
