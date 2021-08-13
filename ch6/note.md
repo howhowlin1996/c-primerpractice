@@ -1446,7 +1446,7 @@ void useBigger(const string &s1, const string &s2,
 bool (*pf)(const string &, const string &));
 ```
 
-* When we pass a function as an argument, we can do so directly. It will beautomatically converted to a pointer:
+* When we pass a function as an argument, we can do so directly. It will be automatically converted to a pointer:
 
 ```c++
 // automatically converts the function lengthCompare to a pointer to function
@@ -1480,8 +1480,105 @@ void useBigger(const string&, const string&, FuncP2);
 
 #### Returning a Pointer to Function
 
+* Similarly, we must write the return type as a pointer type; the compiler will not automatically treat a function return type as the corresponding pointer type:
+
+```c++
+using F = int(int*, int); // F is a function type, not a pointer
+using PF = int(*)(int*, int); // PF is a pointer type
+```
+
+```c++
+PF f1(int); // ok: PF is a pointer to function; f1 returns a pointer to function
+F f1(int); // error: F is a function type; f1 can't return a function
+F *f1(int); // ok: explicitly specify that the return type is a pointer to function
+```
+
+* Of course, we can also declare f1 directly, which we’d do as:
+
+```c++
+int (*f1(int))(int*, int);
+```
+
+* f1 has a parameter list, so f1 is a function.
+
+* f1 is preceded by a * so f1 returns a pointer.
+
+* The type of that pointer itself has a parameter list, so the pointer points to a function. That function returns an int.
+
+* We can also use a trailing return:
+
+```c++
+auto f1(int) -> int (*)(int*, int);
+```
+
+* For example, assume we have two functions, both of which return a string::size_type and have two const string& parameters. We can write a third function that takes a string parameter and returns a pointer to one of these two functions as follows:
+
+```c++
+string::size_type largerLength(const string&, const string&);
+// depending on the value of its string parameter,
+// getFcn returns a pointer to sumLength or to largerLength
+decltype(sumLength) *getFcn(const string &);
+```
+
+```c++
+#include <vector>
+#include <iostream>
+
+int foo(int, int);
+int bar(int, int);
+
+int main() {
+  std::vector<int (*)(int, int)> vf;
+
+  vf.push_back(foo);
+  vf.push_back(bar);
+
+  vf[0](1, 2);
+  vf[1](3, 4);
+
+  for (const auto &e : vf)
+    e(9, 9);
+
+  return 0;
+}
+
+int foo(int a, int b) {
+  std::cout << "Called foo(" << a << ", " << b << ")" << std::endl;
+  return 0;
+}
+
+int bar(int a, int b) {
+  std::cout << "Called bar(" << a << ", " << b << ")" << std::endl;
+  return 0;
+}
+```
+
+* output : 
+	* foo(1,2) bar(3,4) foo(9,9) bar(9,9)
+
+```c++
+#include <iostream>
+
+int foo()
+{
+    return 5;
+}
 
 
+int main(int argc, char const *argv[])
+{
+    int (*fcptr)()  = foo;
 
+    std::cout<< fcptr;
+    return 0;
+}
+```
+* output is 1
+
+> There is no overload of operator<< which takes std::ostream and a function pointer. However, there is one that takes std::ostream and a bool, and there is implicit conversion from function pointers to bool.
+
+> So your code converts the function pointer to bool, which is defined as yielding true if it was not a null pointer; and then outputs true , which is defined as outputting 1 by default. You could do std::cout<< std::boolalpha << fcptr; to see true outputted.
+
+![How to print function pointers with cout?](https://stackoverflow.com/questions/2064692/how-to-print-function-pointers-with-cout)
 
 
