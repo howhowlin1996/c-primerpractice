@@ -1328,3 +1328,160 @@ f(42, 2.56);
 	* 3.Match through a promotion.
 	* 4.Match through an arithmetic or or pointer conversion.
 	* 5.Match through a class-type conversion.
+
+* the small integral types always promote to int or to a larger integral type
+
+	* one of which takes an int and the other a short, the short version will be called only on values of type short.
+
+```c++
+void ff(int);
+void ff(short);
+ff('a'); // char promotes to int; calls f(int)
+```
+
+* All the arithmetic conversions are treated as equivalent to each other.
+
+```c++
+void manip(long);
+void manip(float);
+manip(3.14); // error: ambiguous call
+```
+
+* That type can be converted to either long or float. -> The call is ambiguous.
+
+#### Function Matching and const Arguments
+
+```c++
+Record lookup(Account&); // function that takes a reference to
+Account
+Record lookup(const Account&); // new function that takes a const
+reference
+const Account a;
+Account b;
+lookup(a); // calls lookup(const Account&)
+lookup(b); // calls lookup(Account&)
+In the first call, we pass the const object a. We
+```
+
+* In the first call, we pass the const object a. We cannot bind a plain reference to a const.
+
+* In the second call, initializing a reference to const from nonconst object requires a conversion. Compared to nonconst version which is an exact match for b. The compiler will choose nonconst version.
+
+* Pointer parameters work in a similar way.
+
+### Pointers to Functions
+
+* A function pointer is just that a pointer that denotes a function rather than an object.
+
+* A function's type is determined by its return type and the types of its parameters.
+
+* The function's name is not part of its type.
+
+```c++
+// compares lengths of two strings
+bool lengthCompare(const string &, const string &);
+//has type bool(const string&, const string&).
+
+// pf points to a function returning bool that takes two const string references
+bool (*pf)(const string &, const string &); // uninitialized
+```
+
+* The parentheses around *pf are necessary. If we omit the parentheses, then we declare pf as a function that returns a pointer to bool:
+
+```c++
+// declares a function named pf that returns a bool*
+bool *pf(const string &, const string &);
+```
+
+
+#### Using Function Pointers
+
+```c++
+pf = lengthCompare; // pf now points to the function named lengthCompare
+pf = &lengthCompare; // equivalent assignment: address-of operator is optional
+```
+
+```c++
+bool b1 = pf("hello", "goodbye"); // calls lengthCompare
+bool b2 = (*pf)("hello", "goodbye"); // equivalent call
+bool b3 = lengthCompare("hello", "goodbye"); // equivalent call
+```
+
+* There is no conversion between pointers to one function type and pointers to another function type.
+
+```c++
+string::size_type sumLength(const string&, const string&);
+bool cstringCompare(const char*, const char*);
+pf = 0; // ok: pf points to no function
+pf = sumLength; // error: return type differs
+pf = cstringCompare; // error: parameter types differ
+pf = lengthCompare; // ok: function and pointer types match exactly
+```
+
+#### Pointers to Overloaded Functions
+
+* The context must make it clear which version is being used when declaring a pointer to an overloaded function.
+
+```c++
+void ff(int*);
+void ff(unsigned int);
+void (*pf1)(unsigned int) = ff; // pf1 points to ff(unsigned)
+
+void (*pf2)(int) = ff; // error: no ff with a matching parameter list
+double (*pf3)(int*) = ff; // error: return type of ff and pf3 don't match
+```
+
+* The type of the pointer must match one of the overloaded functions exactly.
+
+#### Function Pointer Parameters
+
+* We cannot define parameters of function type but can have a parameter that is a pointer to function.
+
+```c++
+// third parameter is a function type and is automatically treated as a pointer to function
+void useBigger(const string &s1, const string &s2,
+bool pf(const string &, const string &));
+// equivalent declaration: explicitly define the parameter as a pointer to function
+void useBigger(const string &s1, const string &s2,
+bool (*pf)(const string &, const string &));
+```
+
+* When we pass a function as an argument, we can do so directly. It will beautomatically converted to a pointer:
+
+```c++
+// automatically converts the function lengthCompare to a pointer to function
+useBigger(s1, s2, lengthCompare);
+```
+
+* Type aliases (§ 2.5.1, p. 67), along with decltype (§ 2.5.3, p.70), let us simplify code that uses function pointers:
+
+```c++
+// Func and Func2 have function type
+typedef bool Func(const string&, const string&);
+typedef decltype(lengthCompare) Func2; // equivalent type
+// FuncP and FuncP2 have pointer to function type
+typedef bool(*FuncP)(const string&, const string&);
+typedef decltype(lengthCompare) *FuncP2; // equivalent type
+```
+
+* Both Func and Func2 are function types, whereas FuncP and FuncP2 are pointer type.
+
+* Because decltype returns a function type, if we want a pointer we must add the * ourselves.
+
+* We can redeclare useBigger using any of these types:
+
+```c++
+// equivalent declarations of useBigger using type aliases
+void useBigger(const string&, const string&, Func);
+void useBigger(const string&, const string&, FuncP2);
+```
+
+* Both declarations declare the same function. In the first case, the compiler will automatically convert the function type represented by Func to a pointer.
+
+#### Returning a Pointer to Function
+
+
+
+
+
+
