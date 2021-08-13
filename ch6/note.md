@@ -1579,6 +1579,6 @@ int main(int argc, char const *argv[])
 
 > So your code converts the function pointer to bool, which is defined as yielding true if it was not a null pointer; and then outputs true , which is defined as outputting 1 by default. You could do std::cout<< std::boolalpha << fcptr; to see true outputted.
 
-![How to print function pointers with cout?](https://stackoverflow.com/questions/2064692/how-to-print-function-pointers-with-cout)
+[How to print function pointers with cout?](https://stackoverflow.com/questions/2064692/how-to-print-function-pointers-with-cout)
 
 
