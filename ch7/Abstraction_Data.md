@@ -48,14 +48,14 @@
 
 ```c++
 struct Sales_data {
-// new members: operations on Sales_data objects
-std::string isbn() const { return bookNo; }
-Sales_data& combine(const Sales_data&);
-double avg_price() const;
-// data members are unchanged from § 2.6.1 (p. 72)
-std::string bookNo;
-unsigned units_sold = 0;
-double revenue = 0.0;
+	// new members: operations on Sales_data objects
+	std::string isbn() const { return bookNo; }
+	Sales_data& combine(const Sales_data&);
+	double avg_price() const;
+	// data members are unchanged from § 2.6.1 (p. 72)
+	std::string bookNo;
+	unsigned units_sold = 0;
+	double revenue = 0.0;
 };
 
 // nonmember Sales_data interface functions
@@ -197,4 +197,61 @@ int main()
 ```
 OUTPUT : Hello world I'm Rancho Baba Inside display() Function
 ```
+
+### Class Scope and Member Functions
+
+* The compiler processes classes in two steps:
+
+	* The member declarations are compiled first.
+	
+	* Then, the member function bodies are processed if any.
+* Thus, member function bodies may use other members of their class regardless of where in the class those members appear.
+
+
+### Defining a Member Function outside the Class
+
+* As with any other function, when we define a member function outside the class body, the member's definition must match its declaration.
+
+```c++
+double Sales_data::avg_price() const {
+if (units_sold)
+	return revenue/units_sold;
+else
+	return 0;
+}
+```
+
+* Once the compiler sees the function name, the rest of the code is interpreted as being inside the scope of the class.
+
+* Thus, when avg_price refers to revenue and units_sold, it is implicitly referring to the avg_price refers to revenue and units_sold, it is implicitly referring to the members of Sales_data.
+
+### Defining a Function to Return “This” Object
+
+```c++
+Sales_data& Sales_data::combine(const Sales_data &rhs)
+{
+	units_sold += rhs.units_sold; // add the members of rhs into
+	revenue += rhs.revenue; // the members of ''this'' object
+	return *this; // return the object on which the function was called
+}
+```
+
+```c++
+total.combine(trans); // update the running total
+```
+
+```c++
+units_sold += rhs.units_sold; // add the members of rhs into
+```
+
+* the effect is to add total.units_sold and trans.units_sold, storing the result back into total.units_sold.
+
+* Ordinarily, when we define a function that operates like a built-in operator, our function should mimic the behavior of that operator.
+
+* To return an lvalue, our combine function must return a reference.
+
+* Because the left-hand operand is a Sales_data object, the return type is Sales_data&.
+
+* Here the return statement dereferences this to obtain the object on which the function is executing. That is, for the call above, we return a reference tototal.
+
 

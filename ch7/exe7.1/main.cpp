@@ -1,38 +1,25 @@
 #include <iostream>
-#include "Sales_item.h"
+#include "exe7.1.h"
 
-
-struct Sales_data {
-	std::string bookNo;
-	unsigned units_sold = 0;
-	double revenue = 0.0;
-};
-
-
-int main()
-{
-
-
-	Sales_item total; // variable to hold data for the next transaction
-	// read the first transaction and ensure that there are data to process
-	if (std::cin >> Sales_data.bookNo>>Sales_data.units_sold>>Sales_data.revenue) {
-		Sales_item trans; // variable to hold the running sum
-		// read and process the remaining transactions
-		while (std::cin >> trans) {
-		// if we're still processing the same book
-			if (total.isbn== trans.isbn)
-				total += trans; // update the running total
+using std::cin,std::cout,std::cerr,std::endl;
+int main(){
+	
+	Sales_data total; // variable to hold the running sum
+	if (read(cin, total)) { // read the first transaction
+		Sales_data trans; // variable to hold data for the next transaction
+		while(read(cin, trans)) { // read the remaining transactions
+			if (total.isbn() == trans.isbn()) // check the isbns
+				total.combine(trans); // update the running total
 			else {
-			// print results for the previous book
-				std::cout << total << std::endl;
-				total = trans; // total now refers to the next book
+				print(cout, total) << endl; // print the results
+				total.toNext(trans); // process the next book
 			}
 		}
-		std::cout << total << std::endl; // print the last transaction
-		} else {
-			// no input! warn the user
-			std::cerr << "No data?!" << std::endl;
-			return -1; // indicate failure
-		}
+		print(cout, total) << endl; // print the last transaction
+	} else { // there was no input
+		cerr << "No data?!" << endl; // notify the user
+	}
 	return 0;
 }
+
+
