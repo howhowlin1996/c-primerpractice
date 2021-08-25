@@ -305,7 +305,7 @@ units_sold += rhs.units_sold; // add the members of rhs into
 	* For example, if a class has a member that has a class type, and that class doesn't have a default constructor, then the compiler can掐 initialize that member.
 
 
-### Defining the Sales_data Constructors
+## Defining the Sales_data Constructors
 
 ```c++
 struct Sales_data {
@@ -326,7 +326,7 @@ struct Sales_data {
 
 ```
 
-## What = default Means
+### What = default Means
 
 ```c++
 Sales_data() = default;
@@ -342,7 +342,7 @@ Sales_data() = default;
 
 * Like any other function, if the = default appears inside the class body, the default constructor will be inlined; if it appears on the definition outside the class, the member will not be inlined by default.
 
-## Constructor Initializer List
+### Constructor Initializer List
 
 * This new part is a constructor initializer list, which specifies initial values for one or more data members of the object being created.
 
@@ -395,5 +395,26 @@ Sales_data::Sales_data(std::istream &is)
 * Members that do not appear in the constructor initializer list are initialized by the corresponding in-class initializer (if there is one) or are default initialized.
 
 
+## Copy, Assignment, and Destruction
+
+* Objects are assigned when we use the assignment operator .
+
+* Objects are destroyed when they cease to exist, such as when a local object is destroyed on exit from the block in which it was created .
+
+* Objects stored in a vector (or an array) are destroyed when that vector (or array) is destroyed.
+
+* If we do not define these operations, the compiler will synthesize them for us.
+
+### Some Classes Cannot Rely on the Synthesized Versions
+
+* It is important to understand that for some classes the default versions do not behave appropriately.
+
+* In particular, the synthesized versions are unlikely to work correctly for classes that allocate resources that reside outside the class objects themselves.
+
+	* i.e. dynamic memory
+
+* However, it is worth noting that many classes that need dynamic memory can (and generally should) use a vector or a string to manage the necessary storage.
+
+* Moreover, the synthesized versions for copy, assignment, and destruction work correctly for classes that have vector or string members.
 
 
