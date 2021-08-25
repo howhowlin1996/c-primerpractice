@@ -3,6 +3,12 @@
 #include<iostream>
 
 struct Sales_data {
+	//constructor
+	Sales_data()=default;
+	Sales_data(const std::string& num):bookNo(num){};
+	Sales_data(const std::string& num,int sold_num):bookNo(num),units_sold(sold_num){};
+	Sales_data(const std::string& num,int sold_num,double price):bookNo(num),units_sold(sold_num),revenue(sold_num*price){};
+	Sales_data(std::istream&is);
 	//Sales_data& combine(Sales_data&);//combine two Sales_datas and return to the origin one
 	std::string isbn() const{return this->bookNo;}//fetch bookNo
 	Sales_data& toNext(Sales_data&) {return * this;}// change the bookinfo to the next object
@@ -13,6 +19,7 @@ struct Sales_data {
 	
 
 };
+
 
 std::istream&read(std::istream&, Sales_data&); //read info
 std::ostream&print(std::ostream&,Sales_data&); //print info
@@ -36,5 +43,10 @@ std::ostream&print(std::ostream&pstream, Sales_data&info){
 	return pstream<<info.bookNo<<" "<<info.units_sold<<" "<<info.revenue;
 }
 
+Sales_data::Sales_data(std::istream&is){
+	std::cout<<this->bookNo<<" "<<this->units_sold<<" "<<this->revenue<<std::endl;
+	read(is,*this);
+
+}
 
 #endif
