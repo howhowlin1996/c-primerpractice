@@ -346,7 +346,7 @@ Sales_data() = default;
 
 * This new part is a constructor initializer list, which specifies initial values for one or more data members of the object being created.
 
-ˋˋˋc++
+```c++
 Sales_data(const std::string &s): bookNo(s) { }
 ```
 
