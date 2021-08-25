@@ -254,4 +254,146 @@ units_sold += rhs.units_sold; // add the members of rhs into
 
 * Here the return statement dereferences this to obtain the object on which the function is executing. That is, for the call above, we return a reference tototal.
 
+### Constructors
+
+* Classes control object initialization by defining one or more special member functions known as constructors.
+
+* The job of a constructor is to initialize the data members of a class object. A constructor is run whenever an object of a class type is created.
+
+* Constructors have the same name as the class.
+
+* Unlike other functions, constructors have no return type.
+
+* Like other functions, constructors have a (possibly empty) parameter list and a (possibly empty) function body.
+
+* A class can have multiple constructors.
+
+* Unlike other member functions, constructors may not be declared as const.
+
+* When we create a const object of a class type, the object does not assume its constness until after the constructor completes the object掇 initialization.
+
+* Thus, constructors can write to const objects during their construction.
+
+* Classes control default initialization by defining a special constructor, known as the default constructor.
+
+* The default constructor is one that takes no arguments.
+
+* If our class does not explicitly define any constructors, the compiler will implicitly define the default constructor for us.
+
+*  The compiler-generated constructor is known as the synthesized default constructor.
+
+	* If there is an in-class initializer, use it to initialize the member.
+
+	* Otherwise, default-initialize the member.
+
+### Some Classes Cannot Rely on the Synthesized Default Constructor
+
+* If we define any constructors, the class will not have a default constructor unless we define that constructor ourselves.
+
+* The basis for this rule is that if a class requires control to initialize an object in one case, then the class is likely to require control in all cases.
+
+* The compiler generates a default constructor automatically only if a classdeclares no constructors.
+
+* A second reason to define the default constructor is that for some classes, the synthesized default constructor does the wrong thing.
+
+	* e.g. array and pointer will be undefined
+
+* Classes that have members of built-in or compound type usually should rel y on the synthesized default constructor only if all such members have in-class initializers.
+
+* A third reason that some classes must define their own default constructor is that sometimes the compiler is unable to synthesize one.
+
+	* For example, if a class has a member that has a class type, and that class doesn't have a default constructor, then the compiler can掐 initialize that member.
+
+
+### Defining the Sales_data Constructors
+
+```c++
+struct Sales_data {
+	// constructors added
+	Sales_data() = default;
+	Sales_data(const std::string &s): bookNo(s) { }
+	Sales_data(const std::string &s, unsigned n, double p):
+	bookNo(s), units_sold(n), revenue(p*n) { }
+	Sales_data(std::istream &);
+	// other members as before
+	std::string isbn() const { return bookNo; }
+	Sales_data& combine(const Sales_data&);
+	double avg_price() const;
+	std::string bookNo;
+	unsigned units_sold = 0;
+	double revenue = 0.0;
+};
+
+```
+
+## What = default Means
+
+```c++
+Sales_data() = default;
+```
+
+* This constructor defines the default constructor because it takes no arguments.
+
+* Under the new standard, if we want the default behavior, we can ask the compiler to generate the constructor for us by writing = default after the parameter list.
+
+* The default constructor works for Sales_data only because we provide initializers for the data members with built-in type.
+
+* If your compiler does not support in-class initializers, your default constructor should use the constructor initializer list (described immediately following) to initialize every member of the class.
+
+* Like any other function, if the = default appears inside the class body, the default constructor will be inlined; if it appears on the definition outside the class, the member will not be inlined by default.
+
+## Constructor Initializer List
+
+* This new part is a constructor initializer list, which specifies initial values for one or more data members of the object being created.
+
+ˋˋˋc++
+Sales_data(const std::string &s): bookNo(s) { }
+```
+
+* The constructor that has a single string parameter uses that string to initialize bookNo but does not explicitly initialize the units_sold and revenue members.
+
+* When a member is omitted from the constructor initializer list, it is implicitly initialized using the same process as is used by the synthesized default constructor.
+
+* equal to :
+
+```c++
+// has the same behavior as the original constructor defined above
+Sales_data(const std::string &s):
+bookNo(s), units_sold(0), revenue(0){ }
+```
+
+```c++
+Sales_data(const std::string &s, unsigned n, double p):
+bookNo(s), units_sold(n), revenue(p*n) { }
+```
+
+* The constructor initializer is a list of member names, each of which is followed by that member掇 initial value in parentheses (or inside curly braces).
+
+* Multiple member initializations are separated by commas.
+
+* Constructors should not override in-class initializers except to use a different initial value.
+
+* If you can掐 use in-class initializers, each constructor should explicitly initialize every member of built-in type.
+
+### Defining a Constructor outside the Class Body
+
+* Unlike our other constructors, the constructor that takes an istream does have work to do.
+
+```c++
+Sales_data::Sales_data(std::istream &is)
+{
+	read(is, *this); // read will read a transaction from is into this object
+}
+```
+
+* Constructors have no return type, so this definition starts with the name of the function we are defining.
+
+* Sales_data::Sales_data says that we're defining the Sales_data member named Sales_data.
+
+* Even though the constructor initializer list is empty, the members of this object are still initialized before the constructor body is executed.
+
+* Members that do not appear in the constructor initializer list are initialized by the corresponding in-class initializer (if there is one) or are default initialized.
+
+
+
 
